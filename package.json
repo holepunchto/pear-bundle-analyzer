@@ -1,0 +1,25 @@
+{
+  "name": "pear-warmup",
+  "version": "1.0.0",
+  "description": "Pear warmup map creator",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && bare test/test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bare-path": "^3.0.0",
+    "brittle": "^3.7.0",
+    "corestore": "^6.18.4",
+    "localdrive": "^1.12.1",
+    "mirror-drive": "^1.4.0",
+    "random-access-memory": "^6.2.1",
+    "standard": "^17.1.2"
+  },
+  "dependencies": {
+    "dependency-stream": "^2.2.3",
+    "hyperdrive": "^11.13.1",
+    "ready-resource": "^1.1.1"
+  }
+}
