@@ -42,6 +42,9 @@ class PearBundleAnalyzer extends ReadyResource {
   }
 
   async generate (entrypoint, assets = []) {
+    this._meta.clear() // reset state
+    this._data.clear()
+
     if (entrypoint && this._isJS(entrypoint)) {
       await this._analyzeJS(entrypoint)
     }
@@ -53,10 +56,6 @@ class PearBundleAnalyzer extends ReadyResource {
       }
     }
     const map = this.deflate()
-
-    this._meta.clear()
-    this._data.clear()
-
     return map
   }
 
