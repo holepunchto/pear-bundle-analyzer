@@ -51,5 +51,4 @@ test('should generate map of cjs app', async (t) => {
   t.ok(inflated.meta.length !== 0)
 })
 
-
 // TODO add assets preload test

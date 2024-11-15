@@ -41,22 +41,27 @@ class PearBundleAnalyzer extends ReadyResource {
     this.capture(range)
   }
 
+  async _analyze (preload) {
+    if (this._isJS(preload)) {
+      await this._analyzeJS(preload)
+    } else {
+      await this._analyzePreload(preload)
+    }
+  }
+
   async generate (entrypoint, assets = []) {
     this._meta.clear() // reset state
     this._data.clear()
 
     if (entrypoint && this._isJS(entrypoint)) {
-      await this._analyzeJS(entrypoint)
+      await this._analyze(entrypoint)
     }
+
     for (const asset of assets) {
-      if (this._isJS(asset)) {
-        await this._analyzeJS(asset)
-      } else {
-        await this._analyzePreload(asset)
-      }
+      await this._analyze(asset)
     }
-    const map = this.deflate()
-    return map
+
+    return this.deflate()
   }
 
   capture (seq, core = this.constructor.DATA) {
