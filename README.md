@@ -3,12 +3,12 @@
 Static analysis of a Pear app bundle. Performs static analysis on a Pear app bundle to generate a delta-encoded warm-up map for a specified entrypoint and preloads.
 
 ```
-npm i pear-bundle analyzer
+npm i pear-bundle-analyzer
 ```
 
 ## Usage
 
-```
+```js
 const analyzer = new PearBundleAnalyzer(drive)
 analyzer.ready()
 const deflated = await analyzer.generate('app.js') // delta encoded warm-up map
