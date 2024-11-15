@@ -3,7 +3,7 @@ const Corestore = require('corestore')
 const RAM = require('random-access-memory')
 const Localdrive = require('localdrive')
 const Mirrordrive = require('mirror-drive')
-const PearWarmup = require('../index.js')
+const PearBundleAnalyzer = require('../index.js')
 const Hyperdrive = require('hyperdrive')
 const path = require('bare-path')
 
@@ -19,11 +19,14 @@ test('should generate map of esm app', async (t) => {
   const mirror = new Mirrordrive(localdrive, drive)
   await mirror.done()
 
-  const warmup = new PearWarmup(drive)
-  warmup.ready()
+  const analyzer = new PearBundleAnalyzer(drive)
+  analyzer.ready()
 
-  const deflated = await warmup.generate('app.js')
-  const inflated = PearWarmup.inflate(deflated.meta, deflated.data)
+  const deflated = await analyzer.generate('app.js')
+
+  t.is(deflated.data.toString(), '0,2,1')
+
+  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
 
   t.is(inflated.data.length, 2)
 
@@ -50,11 +53,14 @@ test('should generate map of cjs app', async (t) => {
   const mirror = new Mirrordrive(localdrive, drive)
   await mirror.done()
 
-  const warmup = new PearWarmup(drive)
-  warmup.ready()
+  const analyzer = new PearBundleAnalyzer(drive)
+  analyzer.ready()
 
-  const deflated = await warmup.generate('app.js')
-  const inflated = PearWarmup.inflate(deflated.meta, deflated.data)
+  const deflated = await analyzer.generate('app.js')
+
+  t.is(deflated.data.toString(), '0,2,1')
+
+  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
 
   t.is(inflated.data.length, 2)
 

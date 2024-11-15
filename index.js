@@ -1,7 +1,8 @@
 const DependencyStream = require('dependency-stream')
 const ReadyResource = require('ready-resource')
+const { extname } = require('bare-path')
 
-class PearWarmup extends ReadyResource {
+class PearBundleAnalyzer extends ReadyResource {
   static META = 0
   static DATA = 1
 
@@ -17,10 +18,13 @@ class PearWarmup extends ReadyResource {
   }
 
   async _close () {
-    this._drive.close()
   }
 
-  async generate (entrypoint) {
+  async _isJS (path) {
+    return extname(path) === '.js' || extname(path) === '.mjs'
+  }
+
+  async _analyzeJS (entrypoint) {
     const dependencyStream = new DependencyStream(this._drive, { entrypoint })
     for await (const dep of dependencyStream) {
       const entry = await this._drive.entry(dep.key, { onseq: (seq) => this.capture(seq, this.constructor.META) })
@@ -28,7 +32,32 @@ class PearWarmup extends ReadyResource {
       const range = [blob.blockLength, blob.blockOffset]
       this.capture(range)
     }
-    return this.deflate()
+  }
+
+  async _analyzeAsset (asset) {
+    const entry = await this._drive.entry(asset, { onseq: (seq) => this.capture(seq, this.constructor.META) })
+    const blob = entry.value.blob
+    const range = [blob.blockLength, blob.blockOffset]
+    this.capture(range)
+  }
+
+  async generate (entrypoint, assets = []) {
+    if (entrypoint && this._isJS(entrypoint)) {
+      await this._analyzeJS(entrypoint)
+    }
+    for (const asset of assets) {
+      if (this._isJS(asset)) {
+        await this._analyzeJS(asset)
+      } else {
+        this._analyzePreload(asset)
+      }
+    }
+    const map = this.deflate()
+
+    this._meta.clear()
+    this._data.clear()
+
+    return map
   }
 
   capture (seq, core = this.constructor.DATA) {
@@ -46,7 +75,7 @@ class PearWarmup extends ReadyResource {
   static inflate (meta, data) { return { meta: inflate(meta), data: inflate(data) } }
 }
 
-// delta decoding
+// delta encoding
 
 function deflate (set) {
   const array = [...set]
@@ -59,7 +88,7 @@ function deflate (set) {
   })
 }
 
-// delta encoding
+// delta decoding
 
 function inflate (array) {
   const { ranges } = array.reduce(({ ranges, sum }, n, i) => {
@@ -79,4 +108,4 @@ function inflate (array) {
   return ranges
 }
 
-module.exports = PearWarmup
+module.exports = PearBundleAnalyzer

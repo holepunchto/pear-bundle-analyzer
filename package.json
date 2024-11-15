@@ -1,13 +1,12 @@
 {
-  "name": "pear-warmup",
+  "name": "pear-bundle-analyzer",
   "version": "1.0.0",
-  "description": "Pear warmup map creator",
+  "description": "Static analysis of Pear bundle",
   "main": "index.js",
   "scripts": {
     "test": "standard && bare test/test.js"
   },
-  "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "devDependencies": {
     "bare-path": "^3.0.0",
     "brittle": "^3.7.0",
