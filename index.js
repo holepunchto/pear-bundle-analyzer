@@ -49,7 +49,7 @@ class PearBundleAnalyzer extends ReadyResource {
       if (this._isJS(asset)) {
         await this._analyzeJS(asset)
       } else {
-        this._analyzePreload(asset)
+        await this._analyzePreload(asset)
       }
     }
     const map = this.deflate()
