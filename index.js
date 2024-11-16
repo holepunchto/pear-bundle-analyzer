@@ -24,7 +24,7 @@ class PearBundleAnalyzer extends ReadyResource {
     return extname(path) === '.js' || extname(path) === '.mjs'
   }
 
-  async _analyzeJS (entrypoint) {
+  async _analyzeEntrypoint (entrypoint) {
     const dependencyStream = new DependencyStream(this._drive, { entrypoint })
     for await (const dep of dependencyStream) {
       const entry = await this._drive.entry(dep.key, { onseq: (seq) => this.capture(seq, this.constructor.META) })
@@ -36,17 +36,23 @@ class PearBundleAnalyzer extends ReadyResource {
 
   async _analyzeAsset (asset) {
     const entry = await this._drive.entry(asset, { onseq: (seq) => this.capture(seq, this.constructor.META) })
-    const blob = entry.value.blob
-    const range = [blob.blockLength, blob.blockOffset]
-    this.capture(range)
+    if (entry) {
+      const blob = entry.value.blob
+      const range = [blob.blockLength, blob.blockOffset]
+      this.capture(range)
+    } else {
+      for await (const e of this._drive.list(asset)) {
+        this._analyzeAsset(e)
+      }
+    }
   }
 
   async generate (entrypoint, assets = []) {
-    this._meta.clear() // reset state
+    this._meta.clear()
     this._data.clear()
 
-    if (entrypoint && this._isJS(entrypoint)) {
-      await this._analyzeJS(entrypoint)
+    if (entrypoint && await this._isJS(entrypoint)) {
+      await this._analyzeEntrypoint(entrypoint)
     }
 
     for (const asset of assets) {

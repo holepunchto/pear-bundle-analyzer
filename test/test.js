@@ -51,4 +51,68 @@ test('should generate map of cjs app', async (t) => {
   t.ok(inflated.meta.length !== 0)
 })
 
-// TODO add assets preload test
+test('preload asset', async (t) => {
+  const store = new Corestore(RAM)
+
+  const app = path.join(__dirname, 'fixtures', 'preload-app')
+  const localdrive = new Localdrive(app)
+  const drive = new Hyperdrive(store)
+  await localdrive.ready()
+  await drive.ready()
+
+  const mirror = new Mirrordrive(localdrive, drive)
+  await mirror.done()
+
+  const analyzer = new PearBundleAnalyzer(drive)
+  analyzer.ready()
+
+  const deflated = await analyzer.generate('app.js', ['/assets/asset.txt'])
+  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+
+  t.ok(inflated.data.length !== 0)
+  t.ok(inflated.meta.length !== 0)
+})
+
+test('html entrypoint', async (t) => {
+  const store = new Corestore(RAM)
+
+  const app = path.join(__dirname, 'fixtures', 'cjs-app')
+  const localdrive = new Localdrive(app)
+  const drive = new Hyperdrive(store)
+  await localdrive.ready()
+  await drive.ready()
+
+  const mirror = new Mirrordrive(localdrive, drive)
+  await mirror.done()
+
+  const analyzer = new PearBundleAnalyzer(drive)
+  analyzer.ready()
+
+  const deflated = await analyzer.generate('index.html')
+  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+
+  t.ok(inflated.data.length === 0)
+  t.ok(inflated.meta.length === 0)
+})
+
+test('preload folder', async (t) => {
+  const store = new Corestore(RAM)
+
+  const app = path.join(__dirname, 'fixtures', 'preload-app')
+  const localdrive = new Localdrive(app)
+  const drive = new Hyperdrive(store)
+  await localdrive.ready()
+  await drive.ready()
+
+  const mirror = new Mirrordrive(localdrive, drive)
+  await mirror.done()
+
+  const analyzer = new PearBundleAnalyzer(drive)
+  analyzer.ready()
+
+  const deflated = await analyzer.generate(null, ['/assets'])
+  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+
+  t.ok(inflated.data.length !== 0)
+  t.ok(inflated.meta.length !== 0)
+})

@@ -21,7 +21,7 @@ const inflated = PearBundleAnalyzer.inflate(deflated)// delta decoded warm-up ma
 Generates a delta-encoded warm-up map for the specified entrypoint.
 
 - entrypoint (string): The starting point for the dependency-stream analysis.
-- assets (Array) (optional): Additional assets to include in the warm-up map.
+- assets (Array) (optional): Additional assets to include in the warm-up map. If a folder is specified, all files and subfolders within that folder will be included.
 
 ### PearBundleAnalyzer.inflate(map)
 
