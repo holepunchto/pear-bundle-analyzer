@@ -22,7 +22,7 @@ test('should generate map of esm app', async (t) => {
   const analyzer = new PearBundleAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate('app.js')
+  const deflated = await analyzer.generate(['app.js'])
   const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
 
   t.ok(inflated.data.length !== 0)
@@ -44,7 +44,7 @@ test('should generate map of cjs app', async (t) => {
   const analyzer = new PearBundleAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate('app.js')
+  const deflated = await analyzer.generate(['app.js'])
   const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
 
   t.ok(inflated.data.length !== 0)
@@ -66,7 +66,7 @@ test('preload asset', async (t) => {
   const analyzer = new PearBundleAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate('app.js', ['/assets/asset.txt'])
+  const deflated = await analyzer.generate(['app.js'], ['/assets/asset.txt'])
   const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
 
   t.ok(inflated.data.length !== 0)
@@ -88,7 +88,7 @@ test('html entrypoint', async (t) => {
   const analyzer = new PearBundleAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate('index.html')
+  const deflated = await analyzer.generate(['index.html'])
   const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
 
   t.ok(inflated.data.length === 0)
@@ -110,7 +110,7 @@ test('preload folder', async (t) => {
   const analyzer = new PearBundleAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate(null, ['/assets'])
+  const deflated = await analyzer.generate([], ['/assets'])
   const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
 
   t.ok(inflated.data.length !== 0)

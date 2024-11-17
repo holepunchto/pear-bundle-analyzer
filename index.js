@@ -47,12 +47,14 @@ class PearBundleAnalyzer extends ReadyResource {
     }
   }
 
-  async generate (entrypoint, assets = []) {
+  async generate (entrypoints = [], assets = []) {
     this._meta.clear()
     this._data.clear()
 
-    if (entrypoint && await this._isJS(entrypoint)) {
-      await this._analyzeEntrypoint(entrypoint)
+    for await (const entrypoint of entrypoints) {
+      if (entrypoint && await this._isJS(entrypoint)) {
+        await this._analyzeEntrypoint(entrypoint)
+      }
     }
 
     for (const asset of assets) {
