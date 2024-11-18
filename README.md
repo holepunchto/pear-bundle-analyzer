@@ -11,8 +11,8 @@ npm i drive-analyzer
 ```
 const analyzer = new DriveAnalyzer(drive)
 analyzer.ready()
-const deflated = await analyzer.generate(['app.js']) // delta encoded warm-up map
-const inflated = DriveAnalyzer.inflate(deflated)// delta decoded warm-up map
+const encoded = await analyzer.analyze(['app.js']) // delta encoded warm-up map
+const decoded = DriveAnalyzer.decode(deflated)// delta decoded warm-up map
 ```
 
 ## API
