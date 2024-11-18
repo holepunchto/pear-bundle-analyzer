@@ -1,29 +1,29 @@
-# Pear Bundle Analyzer
+# Drive Analyzer
 
-Static analysis of a Pear app bundle. Performs static analysis on a Pear app bundle to generate a delta-encoded warm-up map for a specified entrypoint and preloads.
+Static analysis of a Hyperdrive bundle. Performs static analysis on a Hyperdrive bundle to generate a delta-encoded warm-up map for a specified entrypoint and preloads.
 
 ```
-npm i pear-bundle analyzer
+npm i drive-analyzer
 ```
 
 ## Usage
 
 ```
-const analyzer = new PearBundleAnalyzer(drive)
+const analyzer = new DriveAnalyzer(drive)
 analyzer.ready()
 const deflated = await analyzer.generate(['app.js']) // delta encoded warm-up map
-const inflated = PearBundleAnalyzer.inflate(deflated)// delta decoded warm-up map
+const inflated = DriveAnalyzer.inflate(deflated)// delta decoded warm-up map
 ```
 
 ## API
-### analyzer.generate(entrypoint, [assets])
+### analyzer.analyze(entrypoint, [assets])
 
 Generates a delta-encoded warm-up map for the specified entrypoint.
 
 - entrypoints (Array) (string): The starting points for the dependency-stream analysis.
 - assets (Array) (optional): Additional assets to include in the warm-up map. If a folder is specified, all files and subfolders within that folder will be included.
 
-### PearBundleAnalyzer.inflate(map)
+### DriveAnalyzer.decode(map)
 
 Decodes a delta-encoded warm-up map.
 

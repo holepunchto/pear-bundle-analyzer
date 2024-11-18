@@ -1,7 +1,7 @@
 {
-  "name": "pear-bundle-analyzer",
+  "name": "drive-analyzer",
   "version": "1.0.0",
-  "description": "Static analysis of Pear bundle",
+  "description": "Static analysis of a Hyperdrive bundle",
   "main": "index.js",
   "files": [
     "index.js"
@@ -29,12 +29,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/holepunchto/pear-bundle-analyzer.git"
+    "url": "git+https://github.com/holepunchto/drive-analyzer.git"
   },
   "keywords": [],
   "author": "",
   "bugs": {
-    "url": "https://github.com/holepunchto/pear-bundle-analyzer/issues"
+    "url": "https://github.com/holepunchto/drive-analyzer/issues"
   },
-  "homepage": "https://github.com/holepunchto/pear-bundle-analyzer#readme"
+  "homepage": "https://github.com/holepunchto/drive-analyzer#readme"
 }

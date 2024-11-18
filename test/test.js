@@ -3,7 +3,7 @@ const Corestore = require('corestore')
 const RAM = require('random-access-memory')
 const Localdrive = require('localdrive')
 const Mirrordrive = require('mirror-drive')
-const PearBundleAnalyzer = require('../index.js')
+const DriveAnalyzer = require('../index.js')
 const Hyperdrive = require('hyperdrive')
 const path = require('bare-path')
 
@@ -19,14 +19,14 @@ test('should generate map of esm app', async (t) => {
   const mirror = new Mirrordrive(localdrive, drive)
   await mirror.done()
 
-  const analyzer = new PearBundleAnalyzer(drive)
+  const analyzer = new DriveAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate(['app.js'])
-  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+  const encoded = await analyzer.analyze(['app.js'])
+  const decoded = DriveAnalyzer.decode(encoded.meta, encoded.data)
 
-  t.ok(inflated.data.length !== 0)
-  t.ok(inflated.meta.length !== 0)
+  t.ok(decoded.data.length !== 0)
+  t.ok(decoded.meta.length !== 0)
 })
 
 test('should generate map of cjs app', async (t) => {
@@ -41,14 +41,14 @@ test('should generate map of cjs app', async (t) => {
   const mirror = new Mirrordrive(localdrive, drive)
   await mirror.done()
 
-  const analyzer = new PearBundleAnalyzer(drive)
+  const analyzer = new DriveAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate(['app.js'])
-  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+  const encoded = await analyzer.analyze(['app.js'])
+  const decoded = DriveAnalyzer.decode(encoded.meta, encoded.data)
 
-  t.ok(inflated.data.length !== 0)
-  t.ok(inflated.meta.length !== 0)
+  t.ok(decoded.data.length !== 0)
+  t.ok(decoded.meta.length !== 0)
 })
 
 test('preload asset', async (t) => {
@@ -63,14 +63,14 @@ test('preload asset', async (t) => {
   const mirror = new Mirrordrive(localdrive, drive)
   await mirror.done()
 
-  const analyzer = new PearBundleAnalyzer(drive)
+  const analyzer = new DriveAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate(['app.js'], ['/assets/asset.txt'])
-  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+  const encoded = await analyzer.analyze(['app.js'], ['/assets/asset.txt'])
+  const decoded = DriveAnalyzer.decode(encoded.meta, encoded.data)
 
-  t.ok(inflated.data.length !== 0)
-  t.ok(inflated.meta.length !== 0)
+  t.ok(decoded.data.length !== 0)
+  t.ok(decoded.meta.length !== 0)
 })
 
 test('html entrypoint', async (t) => {
@@ -85,14 +85,14 @@ test('html entrypoint', async (t) => {
   const mirror = new Mirrordrive(localdrive, drive)
   await mirror.done()
 
-  const analyzer = new PearBundleAnalyzer(drive)
+  const analyzer = new DriveAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate(['index.html'])
-  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+  const encoded = await analyzer.analyze(['index.html'])
+  const decoded = DriveAnalyzer.decode(encoded.meta, encoded.data)
 
-  t.ok(inflated.data.length === 0)
-  t.ok(inflated.meta.length === 0)
+  t.ok(decoded.data.length === 0)
+  t.ok(decoded.meta.length === 0)
 })
 
 test('preload folder', async (t) => {
@@ -107,12 +107,12 @@ test('preload folder', async (t) => {
   const mirror = new Mirrordrive(localdrive, drive)
   await mirror.done()
 
-  const analyzer = new PearBundleAnalyzer(drive)
+  const analyzer = new DriveAnalyzer(drive)
   analyzer.ready()
 
-  const deflated = await analyzer.generate([], ['/assets'])
-  const inflated = PearBundleAnalyzer.inflate(deflated.meta, deflated.data)
+  const encoded = await analyzer.analyze([], ['/assets'])
+  const decoded = DriveAnalyzer.decode(encoded.meta, encoded.data)
 
-  t.ok(inflated.data.length !== 0)
-  t.ok(inflated.meta.length !== 0)
+  t.ok(decoded.data.length !== 0)
+  t.ok(decoded.meta.length !== 0)
 })

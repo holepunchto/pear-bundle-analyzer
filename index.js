@@ -2,7 +2,7 @@ const DependencyStream = require('dependency-stream')
 const ReadyResource = require('ready-resource')
 const { extname } = require('bare-path')
 
-class PearBundleAnalyzer extends ReadyResource {
+class DriveAnalyzer extends ReadyResource {
   static META = 0
   static DATA = 1
 
@@ -47,7 +47,7 @@ class PearBundleAnalyzer extends ReadyResource {
     }
   }
 
-  async generate (entrypoints = [], assets = []) {
+  async analyze (entrypoints = [], assets = []) {
     this._meta.clear()
     this._data.clear()
 
@@ -61,7 +61,7 @@ class PearBundleAnalyzer extends ReadyResource {
       await this._analyzeAsset(asset)
     }
 
-    return this.deflate()
+    return this._encode()
   }
 
   capture (seq, core = this.constructor.DATA) {
@@ -74,14 +74,14 @@ class PearBundleAnalyzer extends ReadyResource {
     }
   }
 
-  deflate () { return { meta: deflate(this._meta), data: deflate(this._data) } }
+  _encode () { return { meta: encode(this._meta), data: encode(this._data) } }
 
-  static inflate (meta, data) { return { meta: inflate(meta), data: inflate(data) } }
+  static decode (meta, data) { return { meta: decode(meta), data: decode(data) } }
 }
 
 // delta encoding
 
-function deflate (set) {
+function encode (set) {
   const array = [...set]
   array.sort((a, b) => a - b)
   return array.map((n, i) => {
@@ -94,7 +94,7 @@ function deflate (set) {
 
 // delta decoding
 
-function inflate (array) {
+function decode (array) {
   const { ranges } = array.reduce(({ ranges, sum }, n, i) => {
     if (i === 0) {
       ranges.push({ start: n, end: n + 1 })
@@ -112,4 +112,4 @@ function inflate (array) {
   return ranges
 }
 
-module.exports = PearBundleAnalyzer
+module.exports = DriveAnalyzer
