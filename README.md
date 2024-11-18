@@ -1,6 +1,6 @@
 # Drive Analyzer
 
-Static analysis of a Hyperdrive bundle. Performs static analysis on a Hyperdrive bundle to generate a delta-encoded warm-up map for a specified entrypoint and preloads.
+Static analysis of a Hyperdrive. Performs static analysis on a Hyperdrive to generate a delta-encoded warm-up map for a specified entrypoint and preloads.
 
 ```
 npm i drive-analyzer
