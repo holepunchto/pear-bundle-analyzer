@@ -76,7 +76,7 @@ test('preload asset', async (t) => {
 test('html entrypoint', async (t) => {
   const store = new Corestore(RAM)
 
-  const app = path.join(__dirname, 'fixtures', 'cjs-app')
+  const app = path.join(__dirname, 'fixtures', 'pear-desktop-app')
   const localdrive = new Localdrive(app)
   const drive = new Hyperdrive(store)
   await localdrive.ready()
@@ -91,8 +91,8 @@ test('html entrypoint', async (t) => {
   const encoded = await analyzer.analyze(['index.html'])
   const decoded = DriveAnalyzer.decode(encoded.meta, encoded.data)
 
-  t.ok(decoded.data.length === 0)
-  t.ok(decoded.meta.length === 0)
+  t.ok(decoded.data.length !== 0)
+  t.ok(decoded.meta.length !== 0)
 })
 
 test('preload folder', async (t) => {

@@ -1,6 +1,7 @@
 const DependencyStream = require('dependency-stream')
 const ReadyResource = require('ready-resource')
 const { extname } = require('bare-path')
+const resolve = require('unix-path-resolve')
 
 class DriveAnalyzer extends ReadyResource {
   static META = 0
@@ -20,8 +21,41 @@ class DriveAnalyzer extends ReadyResource {
   async _close () {
   }
 
-  async _isJS (path) {
+  _isJS (path) {
     return extname(path) === '.js' || extname(path) === '.mjs'
+  }
+
+  _isHTML (path) {
+    return extname(path) === '.html'
+  }
+
+  _isCustomScheme (str) {
+    return /^[a-z][a-z0-9]+:/i.test(str)
+  }
+
+  _sniffJS (src) {
+    const s1 = src.match(/"[^"]+"/ig)
+    const s2 = src.match(/'[^']+'/ig)
+
+    const entries = []
+
+    if (s1) {
+      for (const s of s1) {
+        if (/\.(m|c)?js"$/.test(s)) {
+          entries.push(s.slice(1, -1))
+        }
+      }
+    }
+
+    if (s2) {
+      for (const s of s2) {
+        if (/\.(m|c)?js'$/.test(s)) {
+          entries.push(s.slice(1, -1))
+        }
+      }
+    }
+
+    return entries.filter(e => !this._isCustomScheme(e))
   }
 
   async _analyzeEntrypoint (entrypoint) {
@@ -47,17 +81,31 @@ class DriveAnalyzer extends ReadyResource {
     }
   }
 
+  async _extractJSFromHTML (entrypoints) {
+    return entrypoints.reduce(async (acc, entrypoint) => {
+      if (this._isHTML(entrypoint)) {
+        const html = await this._drive.get(resolve('/', entrypoint))
+        if (html) acc.push(...this._sniffJS(html.toString()))
+      } else {
+        acc.push(entrypoint)
+      }
+      return acc
+    }, [])
+  }
+
   async analyze (entrypoints = [], assets = []) {
     this._meta.clear()
     this._data.clear()
 
-    for await (const entrypoint of entrypoints) {
-      if (entrypoint && await this._isJS(entrypoint)) {
+    entrypoints = await this._extractJSFromHTML(entrypoints)
+
+    for await (const entrypoint of entrypoints.map(e => resolve('/', e))) {
+      if (entrypoint && this._isJS(entrypoint)) {
         await this._analyzeEntrypoint(entrypoint)
       }
     }
 
-    for (const asset of assets) {
+    for (const asset of assets.map(e => resolve('/', e))) {
       await this._analyzeAsset(asset)
     }
 

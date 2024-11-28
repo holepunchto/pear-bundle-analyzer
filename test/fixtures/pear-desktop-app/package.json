@@ -1,0 +1,15 @@
+{
+  "name": "pear-desktop-app",
+  "main": "index.html",
+  "pear": {
+    "name": "pear-desktop-app",
+    "type": "desktop",
+    "gui": {
+      "backgroundColor": "#1F2430",
+      "height": "540",
+      "width": "720"
+    }
+  },
+  "type": "module",
+  "license": "Apache-2.0"
+}
