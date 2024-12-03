@@ -82,15 +82,16 @@ class DriveAnalyzer extends ReadyResource {
   }
 
   async _extractJSFromHTML (entrypoints) {
-    return entrypoints.reduce(async (acc, entrypoint) => {
+    const expandedEntrypoints = []
+    for (const entrypoint of entrypoints) {
       if (this._isHTML(entrypoint)) {
         const html = await this._drive.get(resolve('/', entrypoint))
-        if (html) acc.push(...this._sniffJS(html.toString()))
+        if (html) expandedEntrypoints.push(...this._sniffJS(html.toString()))
       } else {
-        acc.push(entrypoint)
+        expandedEntrypoints.push(entrypoint)
       }
-      return acc
-    }, [])
+    }
+    return expandedEntrypoints
   }
 
   async analyze (entrypoints = [], assets = []) {
